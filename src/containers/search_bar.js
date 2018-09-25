@@ -27,14 +27,14 @@ export class SearchBar extends Component {
 		return (
 			<form onSubmit={this.onFormSubmit} className="input-group">
 				<input
-					placeholder="e.g. Kyrie Irving, or Irving"
+					placeholder="e.g. Kyrie-Irving, or Irving"
 				 	className="form-control"
 				 	value={this.state.term}
 				 	onChange={this.onInputChange}
 				 />
-				<span className="input-group-btn">
+				<div className="input-group-append">
 					<button type="submit" className="btn btn-secondary">Submit</button>
-				</span>
+				</div>
 			</form>
 		);
 	}
