@@ -25,7 +25,7 @@ export class SearchBar extends Component {
 
 	render() {
 		return (
-			<form onSubmit={this.onFormSubmit} className="input-group">
+			<form onSubmit={this.onFormSubmit} className="input-group search-bar">
 				<input
 					placeholder="e.g. Kyrie-Irving, or Irving"
 				 	className="form-control"

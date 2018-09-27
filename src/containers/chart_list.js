@@ -6,11 +6,18 @@ import { ScoreChart, OffChart, DefChart } from '../components/Chart';
 class ChartList extends Component {
 	constructor(props) {
 		super(props);
+		this.toggleScoreDisplay = this.toggleScoreDisplay.bind(this);
+		this.toggleOffDisplay = this.toggleOffDisplay.bind(this);
+		this.toggleDefDisplay = this.toggleDefDisplay.bind(this);
 		this.state = {
+			player: '',
+			scoreChartChecked: true,
 			scoreChartData: {},
 			scoreChartOptions: {},
+			offChartChecked: false,
 			offChartData: {},
 			offChartOptions: {},
+			defChartChecked: false,
 			defChartData: {},
 			defChartOptions: {}
 		}
@@ -22,7 +29,26 @@ class ChartList extends Component {
 		}
 	}
 
+	toggleScoreDisplay() {
+		this.setState({
+      scoreChartChecked: !this.state.scoreChartChecked
+    })
+	}
+
+	toggleOffDisplay() {
+		this.setState({
+      offChartChecked: !this.state.offChartChecked
+    })
+	}
+
+	toggleDefDisplay() {
+		this.setState({
+      defChartChecked: !this.state.defChartChecked
+    })
+	}
+
 	generateData(props) {
+		const playerName = `${props.data[0].player.FirstName} ${props.data[0].player.LastName}`;
 		const recentGames = props.data.slice(-7);
 		const stat = {
 			labels: [],
@@ -57,6 +83,7 @@ class ChartList extends Component {
 			stat.fouls.push(Number(recentGames[i].stats.FoulPers["#text"]));
 		}
 		this.setState({
+			player: playerName,
 			scoreChartData: {
 				labels: stat.labels,
 				datasets: [
@@ -140,7 +167,7 @@ class ChartList extends Component {
 					display: true,
 					fill: true,
 					fontSize: 20,
-					text: 'Offensive Rebound, Assist, Turnover, Block Against'
+					text: 'Offensive Rebound, Assist, Turnover, Blocked'
 				}
 			},
 			defChartData: {
@@ -192,11 +219,36 @@ class ChartList extends Component {
 	}
 
 	render() {
+		const scoreChart = this.state.scoreChartChecked 
+			? <ScoreChart className="offense-data" chartData={this.state.scoreChartData} options={this.state.scoreChartOptions} />
+			: null;
+		const offChart = this.state.offChartChecked 
+			? <OffChart className="offense-data" chartData={this.state.offChartData} options={this.state.offChartOptions} />
+			: null;
+		const defChart = this.state.defChartChecked
+			? <DefChart className="defense-data" chartData={this.state.defChartData} options={this.state.defChartOptions} />
+			: null;
 		return (
 			<div>
-				<ScoreChart chartData={this.state.scoreChartData} options={this.state.scoreChartOptions} />
-				<OffChart chartData={this.state.offChartData} options={this.state.offChartOptions} />
-				<DefChart chartData={this.state.defChartData} options={this.state.defChartOptions} />
+				<form className="checkbox form-inline">
+					<div className="form-check form-check-inline">
+						<input className="form-check-input" type="checkbox" checked={this.state.scoreChartChecked} onChange={this.toggleScoreDisplay}/>
+						<label className="form-check-label" htmlFor="scoreChartDataDisplay">Score</label>
+					</div>
+					<div className="form-check form-check-inline">
+						<input className="form-check-input" type="checkbox" checked={this.state.offChartChecked} onChange={this.toggleOffDisplay}/>
+						<label className="form-check-label" htmlFor="offChartDataDisplay">Other Offense Data</label>
+					</div>
+					<div className="form-check form-check-inline">
+						<input className="form-check-input" type="checkbox" checked={this.state.defChartChecked} onChange={this.toggleDefDisplay}/>
+						<label className="form-check-label" htmlFor="defChartDataDisplay">Defense Data</label>
+					</div>
+				</form>
+
+				<h3 className="title text-center">{`${this.state.player} Last 7 Games Log`}</h3>
+				{ scoreChart }
+				{ offChart }
+				{ defChart }		
 			</div>
 		);
 	}
